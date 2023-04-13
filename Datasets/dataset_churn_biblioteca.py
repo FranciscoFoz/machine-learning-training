@@ -13,6 +13,12 @@ quantidade_total_usuarios = 18000
 tamanho_dados_uns = round(0.95 * quantidade_total_usuarios)
 tamanho_dados_zeros = round(0.05 * quantidade_total_usuarios)
 
+def notas_distribuicao_normal(media,desvio_padrao,tamanho_dados):
+    
+    distribuicao_normal = np.random.normal(media,desvio_padrao, tamanho_dados).round()
+    distribuicao_normal = np.clip(distribuicao_normal,0,5)
+    return distribuicao_normal
+
 data = {
     'nivel_matricula': np.random.choice(tipo_usuario, size=tamanho_dados_uns,p=proporcoes),
     'institutos': np.random.choice(institutos, size=tamanho_dados_uns),
@@ -23,11 +29,11 @@ data = {
     'visitou_evento': np.random.randint(2, size=tamanho_dados_uns),
     'consultou_biblioteca': np.random.randint(2, size=tamanho_dados_uns),
     
-    'nota_emprestimo': np.random.randint(6, size=tamanho_dados_uns),
-    'nota_evento': np.random.randint(6, size=tamanho_dados_uns),
-    'nota_infraestrutura': np.random.randint(6, size=tamanho_dados_uns),
-    'nota_acervo': np.random.randint(6, size=tamanho_dados_uns),
-    'nota_redes_sociais': np.random.randint(6, size=tamanho_dados_uns)
+    'nota_emprestimo': notas_distribuicao_normal(3,1.5,tamanho_dados_uns),
+    'nota_evento': notas_distribuicao_normal(2.5,1,tamanho_dados_uns),
+    'nota_infraestrutura': notas_distribuicao_normal(3.3,1.5,tamanho_dados_uns),
+    'nota_acervo': notas_distribuicao_normal(4,1.5,tamanho_dados_uns),
+    'nota_redes_sociais': notas_distribuicao_normal(2,2,tamanho_dados_uns)
 }
 
 data_zeros = {
@@ -40,11 +46,11 @@ data_zeros = {
     'visitou_evento': np.zeros(tamanho_dados_zeros, dtype=int),
     'consultou_biblioteca': np.zeros(tamanho_dados_zeros, dtype=int),
     
-    'nota_emprestimo': np.random.randint(6, size=tamanho_dados_zeros),
-    'nota_evento': np.random.randint(6, size=tamanho_dados_zeros),
-    'nota_infraestrutura': np.random.randint(6, size=tamanho_dados_zeros),
-    'nota_acervo': np.random.randint(6, size=tamanho_dados_zeros),
-    'nota_redes_sociais': np.random.randint(6, size=tamanho_dados_zeros)
+    'nota_emprestimo': notas_distribuicao_normal(2.5,1.5,tamanho_dados_zeros),
+    'nota_evento': notas_distribuicao_normal(2,1,tamanho_dados_zeros),
+    'nota_infraestrutura': notas_distribuicao_normal(3,1.5,tamanho_dados_zeros),
+    'nota_acervo': notas_distribuicao_normal(3.5,1.5,tamanho_dados_zeros),
+    'nota_redes_sociais': notas_distribuicao_normal(1.5,2,tamanho_dados_zeros)
 }
 
 df_zeros = pd.DataFrame(data_zeros)
