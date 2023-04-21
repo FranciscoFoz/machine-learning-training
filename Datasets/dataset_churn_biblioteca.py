@@ -10,8 +10,8 @@ institutos = ['Artes','Biologia','Computação','Economia','Estudos da Linguagem
               'Geociências','Matemática, Estatística e Computação Científica','Química']
 
 quantidade_total_usuarios = 18000
-tamanho_dados_uns = round(0.95 * quantidade_total_usuarios)
-tamanho_dados_zeros = round(0.05 * quantidade_total_usuarios)
+tamanho_dados_uns = round(0.93 * quantidade_total_usuarios)
+tamanho_dados_zeros = round(0.07 * quantidade_total_usuarios)
 
 def notas_distribuicao_normal(media,desvio_padrao,tamanho_dados):
     
@@ -24,8 +24,9 @@ data = {
     'institutos': np.random.choice(institutos, size=tamanho_dados_uns),
     
     'visitou_biblioteca': np.random.randint(2, size=tamanho_dados_uns),
-    'fez_emprestimo': np.random.randint(2, size=tamanho_dados_uns),
+    'fez_emprestimo': np.ones(tamanho_dados_uns, dtype=int),
     'visitou_biblioteca_digital': np.random.randint(2, size=tamanho_dados_uns),
+    'fez_download_arquivo_biblioteca_digital': np.ones(tamanho_dados_uns, dtype=int),
     'visitou_evento': np.random.randint(2, size=tamanho_dados_uns),
     'consultou_biblioteca': np.random.randint(2, size=tamanho_dados_uns),
     
@@ -40,11 +41,12 @@ data_zeros = {
     'nivel_matricula': np.random.choice(tipo_usuario, size=tamanho_dados_zeros,p=proporcoes),
     'institutos': np.random.choice(institutos, size=tamanho_dados_zeros),
     
-    'visitou_biblioteca': np.zeros(tamanho_dados_zeros, dtype=int),
+    'visitou_biblioteca': np.random.randint(2, size=tamanho_dados_zeros),
     'fez_emprestimo': np.zeros(tamanho_dados_zeros, dtype=int),
-    'visitou_biblioteca_digital': np.zeros(tamanho_dados_zeros, dtype=int),
-    'visitou_evento': np.zeros(tamanho_dados_zeros, dtype=int),
-    'consultou_biblioteca': np.zeros(tamanho_dados_zeros, dtype=int),
+    'visitou_biblioteca_digital': np.random.randint(2, size=tamanho_dados_zeros),
+    'fez_download_arquivo_biblioteca_digital': np.zeros(tamanho_dados_zeros, dtype=int),
+    'visitou_evento': np.random.randint(2, size=tamanho_dados_zeros),
+    'consultou_biblioteca': np.random.randint(2, size=tamanho_dados_zeros),
     
     'nota_emprestimo': notas_distribuicao_normal(2.5,1.5,tamanho_dados_zeros),
     'nota_evento': notas_distribuicao_normal(2,1,tamanho_dados_zeros),
@@ -59,10 +61,9 @@ df_uns = pd.DataFrame(data)
 df = pd.concat([df_zeros,df_uns])
 
 # Marca a coluna de churn
-df['churn'] = np.where((df['visitou_biblioteca']==0) & 
-                       (df['fez_emprestimo']==0) & 
-                       (df['visitou_biblioteca_digital']==0) & 
-                       (df['visitou_evento']==0) & 
-                       (df['consultou_biblioteca']==0), 'sim', 'não')
+df['churn'] = np.where((df['fez_emprestimo']==0) &
+                       (df['fez_download_arquivo_biblioteca_digital']==0), 'sim', 'não')
+
+df.drop(['fez_emprestimo','fez_download_arquivo_biblioteca_digital'],axis=1,inplace=True)
 
 df.to_csv('Datasets/churn_biblioteca.csv',sep=';',index=False)
