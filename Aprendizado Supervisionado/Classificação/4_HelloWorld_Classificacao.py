@@ -1,7 +1,8 @@
 # Hello World - Classificação 4 - CLASSIFICACAÇÃO DE USUÁRIOS WEB
 
 import requests
-import csv 
+import csv
+from sklearn.naive_bayes import MultinomialNB 
 
 url_csv = 'https://raw.githubusercontent.com/alura-cursos/machine-learning-introducao-a-classificacao/master/acesso.csv'
 
@@ -24,8 +25,27 @@ def carregar_acessos(url):
         
 X, Y = carregar_acessos(url_csv)
 
+treino_dados = X[:90]
+treino_marcacoes = Y[:90]
 
+teste_dados = X[-9:]
+teste_marcacoes = Y[-9:]
 
+modelo = MultinomialNB()
+modelo.fit(treino_dados, treino_marcacoes)
+
+resultado = modelo.predict(teste_dados)
+diferencas = resultado - teste_marcacoes
+
+acertos = (diferencas == 0).all(axis=1)
+
+total_de_acertos = len(acertos)
+total_de_elementos = len(teste_dados)
+
+taxa_de_acerto = 100.0 * total_de_acertos / total_de_elementos
+
+print(taxa_de_acerto)
+print(total_de_elementos)
 
 
 
