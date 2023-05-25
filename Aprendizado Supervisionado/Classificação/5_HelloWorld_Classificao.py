@@ -3,6 +3,7 @@
 import csv
 import pandas as pd
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.dummy import DummyClassifier
 
 
 '''
@@ -47,7 +48,7 @@ treino_marcacoes = Y[:tamanho_de_treino]
 teste_dados = X[-tamanho_de_teste:]
 teste_marcacoes = Y[-tamanho_de_teste:]
 
-
+#Multinomial
 modelo = MultinomialNB()
 modelo.fit(treino_dados, treino_marcacoes)
 
@@ -61,5 +62,25 @@ total_de_elementos = len(teste_dados)
 
 taxa_de_acerto = 100.0 * total_de_acertos / total_de_elementos
 
-print(taxa_de_acerto)
-print(total_de_elementos)
+print(5*'-','Multinomial',5*'-')
+print('Taxa de acerto:',taxa_de_acerto)
+print('Total de elementos:',total_de_elementos)
+
+#Dummy
+
+modelo_ingenuo = DummyClassifier()
+modelo_ingenuo.fit(treino_dados, treino_marcacoes)
+
+resultado_ingenuo = modelo_ingenuo.predict(teste_dados)
+diferencas_do_modelo_ingenuo = resultado_ingenuo - teste_marcacoes
+
+acertos_do_modelo_ingenuo = [d for d in diferencas_do_modelo_ingenuo if d==0]
+
+total_de_acertos_ingenuo = len(acertos_do_modelo_ingenuo)
+total_de_elementos_ingenuo = len(teste_dados)
+
+taxa_de_acerto_ingenuo = 100.0 * total_de_acertos_ingenuo / total_de_elementos_ingenuo
+
+print(5*'-','Dummy',5*'-')
+print('Taxa de acerto:',taxa_de_acerto_ingenuo)
+print('Total de elementos:',total_de_elementos_ingenuo)
